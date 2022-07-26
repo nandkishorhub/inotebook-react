@@ -3,9 +3,9 @@ connectToMongo();
 
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 5000;
 
-// it requires in order to use req.body in respctive routes file
+// It requires in order to use req.body in respctive route files
 app.use(express.json())
 
 app.use("/api/auth", require("./routes/auth"));
