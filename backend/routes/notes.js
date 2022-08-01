@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchuser = require("../middleware/fetchuser");
 const Note = require("../models/Note");
 const { body, validationResult } = require("express-validator");
+ 
 
 const notesValidations = [
   body("title").isLength({ min: 3 }).withMessage("Please enter a valid title"),
@@ -14,7 +15,7 @@ const notesValidations = [
 // Get all the notes using : get:"/api/notes/fetchallnotes". Login required
 router.get("/fetchallnotes", fetchuser, async (req, res) => {
   const notes = await Note.find({ user: req.user.id });
-  res.json(notes);
+  res.json(notes)
 });
 
 // Create/add notes using : post:"/api/notes/addnote". Login required

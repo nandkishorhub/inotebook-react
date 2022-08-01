@@ -32,10 +32,11 @@ const Jwt_Secret = "reactjs";
 // Create a User using POST "/api/auth/createuser". Doesn't require Auth
 router.post("/createuser", createUserValidation, async (req, res) => {
   const errors = validationResult(req);
-
+  let success = false;
   // If there are validations erros then return bad request with error array
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    success = false;
+    return res.status(400).json({ success, errors: errors.array() });
   }
   try {
     // check/finds whether user exist withh given email id or not
@@ -43,8 +44,9 @@ router.post("/createuser", createUserValidation, async (req, res) => {
 
     // Throw bad request error if user with given email id exist
     if (user) {
-      return res.status(400).json({
-        error: `Sorry User with email => ${req.body.email} is already exist`,
+      success = false;
+      return res.status(400).json({success,
+        error: `Sorry user with given email is already exist`,
       });
     }
 
@@ -63,10 +65,11 @@ router.post("/createuser", createUserValidation, async (req, res) => {
         id: user.id,
       },
     };
-
+    
+    success = true;
     const authToken = jwt.sign(data, Jwt_Secret);
 
-    res.json(authToken);
+    res.json({success, authtoken: authToken});
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ errors: "Internal server error" });
@@ -75,6 +78,7 @@ router.post("/createuser", createUserValidation, async (req, res) => {
 
 // Authenticate a User using : post:"/api/auth/login". No login required
 router.post("/login", loginValidation, async (req, res) => {
+  let success = false;
   const errors = validationResult(req);
   // If there are validations errors then return bad request with error array
   if (!errors.isEmpty()) {
@@ -86,16 +90,24 @@ router.post("/login", loginValidation, async (req, res) => {
   try {
     let user = await User.findOne({ email: email });
     if (!user) {
+      success = false;
       return res
         .status(400)
-        .json({ errors: "Please try to login with correct credentials" });
+        .json({
+          success,
+          errors: "Look like you don't have account, please signup ",
+        });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+      success = false;
       return res
         .status(400)
-        .json({ errors: "Please try to login with correct credentials" });
+        .json({
+          success,
+          errors: "Please try to login with correct credentials",
+        });
     }
 
     const data = {
@@ -104,7 +116,8 @@ router.post("/login", loginValidation, async (req, res) => {
       },
     };
     const authToken = jwt.sign(data, Jwt_Secret);
-    res.json(authToken);
+    success = true;
+    res.json({ success, authtoken: authToken });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ errors: "Internal server error" });
