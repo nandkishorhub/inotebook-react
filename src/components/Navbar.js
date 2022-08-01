@@ -12,7 +12,7 @@ function Navbar(props) {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg bg-light">
+      <nav className="navbar navbar-expand-lg bg-secondary">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             iNotebook
