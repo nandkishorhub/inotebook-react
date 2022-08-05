@@ -1,12 +1,15 @@
 import React from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setAlert } from "../reducers/noteReducer/alertReducer";
 
 function Navbar(props) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const logouthandle = () => {
     localStorage.removeItem("token");
-    props.showAlert("Logout successfully", "success");
+    dispatch(setAlert({ message: "logout successfully", type: "success" }));
     navigate("/login");
   };
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setAlert } from "../reducers/noteReducer/alertReducer";
 
 function Signup(props) {
   const [userData, setUserData] = useState({
@@ -8,7 +10,7 @@ function Signup(props) {
     password: "",
     cpassword: "",
   });
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const onChange = (e) => {
@@ -28,10 +30,17 @@ function Signup(props) {
     const jsonData = await response.json();
     if (jsonData.success) {
       localStorage.setItem("token", jsonData.authtoken);
-      props.showAlert("Successfully User Registered", "success");
+      //props.showAlert("Successfully User Registered", "success");
+      dispatch(
+        setAlert({ message: "Successfully User Registered", type: "success" })
+      );
       navigate("/");
     } else {
-      props.showAlert("Invalid details", "danger");
+      // props.showAlert("Invalid details", "danger");
+      //dispatch(setAlert("Invalid details", "danger"))
+      dispatch(
+        setAlert({ message: "Successfully User Registered", type: "success" })
+      );
     }
   };
 

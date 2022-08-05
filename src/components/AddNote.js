@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
-import noteContext from "../context/notes/noteContext";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addNotes } from "../reducers/noteReducer/notesReducer";
+import { setAlert } from "../reducers/noteReducer/alertReducer";
 
 function AddNote(props) {
-  const context = useContext(noteContext);
-  const { addNote } = context;
+  const dispatch = useDispatch();
 
   const [note, setNote] = useState({
     title: "",
@@ -13,7 +14,8 @@ function AddNote(props) {
 
   const handleClick = (e) => {
     e.preventDefault();
-    addNote(note, props);
+    dispatch(addNotes(note));
+    dispatch(setAlert({message:"Note added successfully", type:"success"}));
     setNote({ title: "", description: "", tag: "" });
   };
 

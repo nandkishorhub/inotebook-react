@@ -1,13 +1,15 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
-import noteContext from "../context/notes/noteContext";
+import React, { useRef, useState, useEffect } from "react";
 import AddNote from "./AddNote";
 import NoteItem from "./NoteItem";
 import { useNavigate } from "react-router-dom";
+import { getNotes, editNotes } from "../reducers/noteReducer/notesReducer";
+import { useSelector, useDispatch } from "react-redux";
+import { setAlert } from "../reducers/noteReducer/alertReducer";
 
 function Notes(props) {
-  const context = useContext(noteContext);
+  const notesData = useSelector((state) => state.notes);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { notes, editNote, getNotes } = context;
   const ref = useRef(null);
   const refClose = useRef(null);
   const [note, setNote] = useState({
@@ -18,13 +20,21 @@ function Notes(props) {
   });
 
   const updateNote = (currentNote) => {
+    // On click of refered button listed in below jsx , modal would popup automatically
     ref.current.click();
     setNote(currentNote);
   };
 
   const handleClick = (e) => {
     e.preventDefault();
-    editNote(note, props);
+    dispatch(editNotes(note));
+    // added timeout here so that second dispatch and first will not sync at a time
+    setTimeout(() => {
+      dispatch(
+        setAlert({ message: "Updated note successfully", type: "success" })
+      );
+    }, 500);
+
     refClose.current.click();
   };
 
@@ -34,7 +44,7 @@ function Notes(props) {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      getNotes();
+      dispatch(getNotes());
     } else {
       navigate("/login");
     }
@@ -42,7 +52,8 @@ function Notes(props) {
   }, []);
   return (
     <>
-      <AddNote showAlert={props.showAlert} />
+      <AddNote />
+      {/* modal launch jsx */}
       <button
         type="button"
         className="btn btn-primary"
@@ -51,6 +62,7 @@ function Notes(props) {
         ref={ref}
         style={{ display: "none" }}
       ></button>
+      {/* modal jsx  */}
       <div
         className="modal fade"
         id="exampleModal"
@@ -153,14 +165,14 @@ function Notes(props) {
       </div>
       <div className="row my-3">
         <h2>Your notes</h2>
-        {notes.length !== 0 &&
-          notes.map((note) => {
+        {notesData.length !== 0 &&
+          notesData.map((note) => {
             return (
               <NoteItem
                 key={note._id}
                 note={note}
                 updateNote={updateNote}
-                showAlert={props.showAlert}
+                //showAlert={props.showAlert}
               />
             );
           })}

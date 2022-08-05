@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setAlert } from "../reducers/noteReducer/alertReducer";
 
 function Login(props) {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,10 +23,12 @@ function Login(props) {
     const jsonData = await response.json();
     if (jsonData.success) {
       localStorage.setItem("token", jsonData.authtoken);
-      props.showAlert("Successfuly logged In", "success");
+      //props.showAlert("Successfuly logged In", "success");
+      dispatch(setAlert({ message: "Successfuly logged In", type: "success" }));
       navigate("/");
     } else {
-      props.showAlert("Invalid credentails", "danger");
+      //props.showAlert("Invalid credentails", "danger");
+      dispatch(setAlert({ message: "Invalid credentails", type: "success" }));
     }
   };
 
