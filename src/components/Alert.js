@@ -6,10 +6,10 @@ import { useDispatch } from "react-redux";
 function Alert(props) {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("useEffect", props.alert);
     setTimeout(() => {
       dispatch(setAlert(null));
     }, 1000);
+    // eslint-disable-next-line
   }, [props.alert]);
 
   return (

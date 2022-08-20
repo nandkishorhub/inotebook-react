@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { deletNotes } from "../reducers/noteReducer/notesReducer";
 import { setAlert } from "../reducers/noteReducer/alertReducer";
